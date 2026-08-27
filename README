@@ -1,2 +1,7 @@
 git fetch origin  # ดึงข้อมูลล่าสุดจาก remote repository
 git reset --hard origin/main  # รีเซ็ตให้เหมือนกับเวอร์ชันล่าสุดใน GitHub
+
+*** update code ***
+git add .
+git commit -m "test"
+git push
