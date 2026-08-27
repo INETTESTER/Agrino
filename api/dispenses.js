@@ -1,27 +1,28 @@
 import http from 'k6/http';
 import { domain, token } from './env.js';
 
-// สุ่มเลขบัตรประชาชนไทย 13 หลัก พร้อมคำนวณ check digit ให้ถูกต้อง
-// maxRange = ฐานตัวเลขสูงสุดที่จะสุ่ม (1 - maxRange) ก่อนเติม 0 ข้างหน้าให้ครบ 12 หลัก
-function generateThaiID(maxRange) {
-    const randomNum = Math.floor(Math.random() * maxRange) + 1;
-    const first12 = randomNum.toString().padStart(12, '0');
-    const digits = first12.split('').map(Number);
-
+// สุ่มเลขบัตรประชาชนไทย 13 หลัก แบบสมจริง (หลักแรก 1-8) พร้อม check digit ถูกต้อง
+function generateThaiID() {
+    const firstDigit = Math.floor(Math.random() * 8) + 1; // หลักแรกของบัตร ปชช. จริงคือ 1-8
+    const digits = [firstDigit];
+    for (let i = 0; i < 11; i++) {
+        digits.push(Math.floor(Math.random() * 10));
+    }
     let sum = 0;
     for (let i = 0; i < 12; i++) {
         sum += digits[i] * (13 - i);
     }
     const checkDigit = (11 - (sum % 11)) % 10;
-
-    return first12 + checkDigit;
+    digits.push(checkDigit);
+    return digits.join('');
 }
 
 export function dispenses(cid) {
     const order_no = __ITER + '' + __VU + '' + cid
     const url = `${domain}/api/v1/integrations/dtam/dispenses`;
 
-    const randomCID = generateThaiID(3000); // สุ่มฐาน 1-3000 ตามจำนวน vus ที่จะเทส
+    const randomCID = generateThaiID();
+    // console.log(`CID_CHECK:${randomCID}`);
 
     const payload = JSON.stringify({
         order_no: 'DTAM-ADR-20260827-000001' + order_no,
@@ -85,6 +86,7 @@ export function dispenses(cid) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
+        timeout: '300s',
     };
     const response = http.post(url, payload, params);
     //console.log(response.body);
