@@ -1,9 +1,27 @@
 import http from 'k6/http';
 import { domain, token } from './env.js';
 
+// สุ่มเลขบัตรประชาชนไทย 13 หลัก พร้อมคำนวณ check digit ให้ถูกต้อง
+// maxRange = ฐานตัวเลขสูงสุดที่จะสุ่ม (1 - maxRange) ก่อนเติม 0 ข้างหน้าให้ครบ 12 หลัก
+function generateThaiID(maxRange) {
+    const randomNum = Math.floor(Math.random() * maxRange) + 1;
+    const first12 = randomNum.toString().padStart(12, '0');
+    const digits = first12.split('').map(Number);
+
+    let sum = 0;
+    for (let i = 0; i < 12; i++) {
+        sum += digits[i] * (13 - i);
+    }
+    const checkDigit = (11 - (sum % 11)) % 10;
+
+    return first12 + checkDigit;
+}
+
 export function dispenses(cid) {
     const order_no = __ITER + '' + __VU + '' + cid
     const url = `${domain}/api/v1/integrations/dtam/dispenses`;
+
+    const randomCID = generateThaiID(3000); // สุ่มฐาน 1-3000 ตามจำนวน vus ที่จะเทส
 
     const payload = JSON.stringify({
         order_no: 'DTAM-ADR-20260827-000001' + order_no,
@@ -13,7 +31,7 @@ export function dispenses(cid) {
             identities: [
                 {
                     type: 'THAI_ID',
-                    value: '1234567890123'
+                    value: randomCID
                 }
             ],
             full_name: 'ณรงค์ฤทธิ์ มุณีพรหม',
@@ -62,17 +80,13 @@ export function dispenses(cid) {
             source_updated_at: '2026-08-19T09:00:00+07:00'
         }
     });
-
     const params = {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
     };
-
     const response = http.post(url, payload, params);
-
     //console.log(response.body);
-
     return response;
 }
