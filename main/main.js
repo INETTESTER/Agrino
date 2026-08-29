@@ -8,15 +8,17 @@ import { history } from '../api/history.js';
 import { result } from '../api/result.js';
 import { historysessionid } from '../api/historysessionId.js';
 import { current } from '../api/current.js';
+import { homepage } from '../api/homepage.js';
 //============================================================================
 export default function () {    //เรียกใช้ API ใน export default function
   //response = dispenses(cid)  // เปลี่ยน cid ก่อนยิงทุกครั้ง (บรรทัด 13 ที่ไฟล์ open.sh)
   // response = questionnaire()
   // response = result()
-  response = history()
+  // response = history()
   // response = historysessionid()
   // response = current()
   // response = health()
+  response = homepage()
   error_check(response);
   sleep(1)
 }
