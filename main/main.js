@@ -4,10 +4,14 @@ export { options }; const cid = __ENV.cid || '1'; let response;
 import { DownloadFile, GetProfile, PostProfile, PostProfile_2, PostProfile_3, UploadFile } from '../api/example.js';
 import { dispenses } from '../api/dispenses.js';
 import { questionnaire } from '../api/questionnaire.js';
+import { health } from '../api/health.js';
+import { history } from '../api/history.js';
 //============================================================================
 export default function () {    //เรียกใช้ API ใน export default function
   //response = dispenses(cid)  // เปลี่ยน cid ก่อนยิงทุกครั้ง (บรรทัด 13 ที่ไฟล์ open.sh)
-  response = questionnaire()
+  // response = questionnaire()
+  response = history()
+  // response = health()
   error_check(response);
   sleep(1)
 }

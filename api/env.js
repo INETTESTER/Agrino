@@ -1,2 +1,2 @@
-export const domain = 'https://uat-adr-dtam.one.th';
-export const token = 'secret-key-123';
+export const domain = 'https://dtam-adr.one.th';
+export const token = '';
