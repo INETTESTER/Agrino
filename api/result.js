@@ -1,8 +1,8 @@
 import http from 'k6/http';
 import { domain } from './env.js';
 
-export function history() {
-    const url = `${domain}/api/v1/patient/history`;
+export function result() {
+    const url = `${domain}/api/v1/patient/sessions/99865b43-920a-4b66-9d49-70ef2cc90d4d/result`;
     const params = {
         headers: {
             'Authorization': `Bearer`,
