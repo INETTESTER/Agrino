@@ -7,7 +7,7 @@ export function result() {
         headers: {
             'Authorization': `Bearer`,
         },
-        timeout: '300s',
+        timeout: '60s',
     };
     const response = http.get(url, params);
     return response;

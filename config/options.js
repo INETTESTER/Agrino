@@ -5,6 +5,12 @@ const scenariox = Number(__ENV.scenariox || 1);
 
 const vusx = Math.ceil(user / durationx);
 
+const dns = {
+    ttl: '0s',
+    select: 'roundRobin',
+    policy: 'preferIPv4',
+};
+
 let options;
 
 if (scenariox === 1) {
